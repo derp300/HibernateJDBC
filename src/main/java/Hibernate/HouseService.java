@@ -11,7 +11,6 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
-@Transactional
 @Service("HouseService")
 public class HouseService {
     @Autowired
@@ -52,25 +51,19 @@ public class HouseService {
         System.out.println("Update house with id " + house.id());
     }
 
-    public void setAddress(final int houseId, final String address) {
-            Optional<House> optionalHouse = houseDAO.get(houseId);
-            if (!optionalHouse.isPresent()) {
-                throw new IllegalArgumentException("Not found house with id " + houseId);
-            }
-            optionalHouse.get().setAddress(address);
-            System.out.println("Update house address with id "+ houseId);
+    public void setAddress(final House house, final String address) {
+            house.setAddress(address);
+            update(house);
+            System.out.println("Update house address with id "+ house.id());
     }
 
-    public void setCost(final int houseId, final int cost) {
-            final Optional<House> optionalHouse = houseDAO.get(houseId);
-            if (!optionalHouse.isPresent()) {
-                throw new IllegalArgumentException("Not found house with id " + houseId);
-            }
-            optionalHouse.get().setCost(cost);
-            System.out.println("Update house cost with id "+ houseId);
+    public void setCost(final House house, final int cost) {
+            house.setCost(cost);
+            update(house);
+            System.out.println("Update house cost with id "+ house.id());
     }
 
-    public void setOwner(final int houseId, final int ownerId) {
+    private void setOwner(final int houseId, final int ownerId) {
             final Optional<House> optionalHouse = houseDAO.get(houseId);
             if (!optionalHouse.isPresent()) {
                 throw new IllegalArgumentException("Not found house with id " + houseId);
@@ -79,6 +72,7 @@ public class HouseService {
             System.out.println("Update house owner with id "+ houseId);
     }
 
+    @Transactional
     public void buyHouse(int userId, int houseId) {
         setOwner(houseId, userId);
         userService.drawMoney(userId, get(houseId).get().cost());
@@ -88,9 +82,5 @@ public class HouseService {
     public void delete(final int houseId) {
         houseDAO.delete(houseId);
         System.out.println("Delete house with id "+ houseId);
-    }
-
-    public void cleanTables() {
-        houseDAO.cleanTables();
     }
 }

@@ -5,8 +5,10 @@ import java.util.Properties;
 import javax.inject.Inject;
 import javax.sql.DataSource;
 
+import JDBC.UserCleaner;
 import JDBC.UserDAO;
 import JDBC.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -22,6 +24,12 @@ public class SpringConfig {
     @Autowired
     UserDAO userDAO(DataSource dataSource) {
         return new UserDAO(dataSource);
+    }
+
+    @Bean
+    @Autowired
+    UserCleaner userCleaner(DataSource dataSource) {
+        return new UserCleaner(dataSource);
     }
 
     @Bean
