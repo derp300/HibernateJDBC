@@ -4,8 +4,6 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
@@ -15,9 +13,7 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
-@Repository("houseDAO")
 public class HouseDAO {
-    @Autowired
     private SessionFactory sessionFactory;
 
     public HouseDAO(final SessionFactory sessionFactory) {
@@ -27,8 +23,8 @@ public class HouseDAO {
     HouseDAO() {}
 
     public void insert(final House house) {
-        if (house.id() != null) {
-            throw new IllegalArgumentException("House with " + house.id() + " already exist");
+        if (house.getId() != null) {
+            throw new IllegalArgumentException("House with " + house.getId() + " already exist");
         }
         session().save(house);
     }

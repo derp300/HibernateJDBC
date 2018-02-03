@@ -1,9 +1,6 @@
 package Hibernate;
 
 import JDBC.UserService;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -11,20 +8,15 @@ import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
-@Service("HouseService")
 public class HouseService {
-    @Autowired
     private HouseDAO houseDAO;
-    
-    @Autowired
     private UserService userService;
 
     public UserService getUserService() {
         return userService;
     }
 
-    public HouseService(final SessionFactory sessionFactory,
-                             final HouseDAO houseDAO, final UserService userService) {
+    public HouseService(final HouseDAO houseDAO, final UserService userService) {
         this.userService = requireNonNull(userService);
         this.houseDAO = requireNonNull(houseDAO);
     }
@@ -32,35 +24,35 @@ public class HouseService {
     HouseService() {}
 
     public void save(final House house) {
-    	houseDAO.insert(house);
-    	System.out.println("Insert house with id " + house.id());
+        houseDAO.insert(house);
+        System.out.println("Insert house with id " + house.getId());
     }
 
     public Optional<House> get(final int houseId) {
-    	System.out.println("Get house with id " + houseId);
+        System.out.println("Get house with id " + houseId);
         return houseDAO.get(houseId);
     }
 
     public Set<House> getAll() {
-    	System.out.println("Get all houses");
+        System.out.println("Get all houses");
         return houseDAO.getAll();
     }
 
     public void update(final House house) {
-    	houseDAO.update(house);
-        System.out.println("Update house with id " + house.id());
+        houseDAO.update(house);
+        System.out.println("Update house with id " + house.getId());
     }
 
     public void setAddress(final House house, final String address) {
             house.setAddress(address);
             update(house);
-            System.out.println("Update house address with id "+ house.id());
+            System.out.println("Update house address with id "+ house.getId());
     }
 
     public void setCost(final House house, final int cost) {
             house.setCost(cost);
             update(house);
-            System.out.println("Update house cost with id "+ house.id());
+            System.out.println("Update house cost with id "+ house.getId());
     }
 
     private void setOwner(final int houseId, final int ownerId) {
@@ -68,14 +60,18 @@ public class HouseService {
             if (!optionalHouse.isPresent()) {
                 throw new IllegalArgumentException("Not found house with id " + houseId);
             }
-            optionalHouse.get().setOwner(ownerId);
+            optionalHouse.get().setOwnerId(ownerId);
             System.out.println("Update house owner with id "+ houseId);
     }
 
     @Transactional
     public void buyHouse(int userId, int houseId) {
         setOwner(houseId, userId);
-        userService.drawMoney(userId, get(houseId).get().cost());
+        final Optional<House> optionalHouse = get(houseId);
+        if (!optionalHouse.isPresent()) {
+            throw new IllegalArgumentException("Not found house with id " + houseId);
+        }
+        userService.drawMoney(userId, optionalHouse.get().getCost());
         System.out.println("User with id " + userId +" buy house with id "+ houseId);
     }
 

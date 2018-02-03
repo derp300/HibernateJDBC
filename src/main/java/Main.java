@@ -3,10 +3,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import Configuration.SpringConfig;
-import Configuration.HibernateConfig;
 import Hibernate.House;
 import Hibernate.HouseCleaner;
 import Hibernate.HouseService;
@@ -101,8 +99,8 @@ public class Main {
         // save/get
         house = houses.iterator().next();
         System.out.println(house.toString());
-        System.out.println(houseService.get(house.id()).get());
-        if (house.equals(houseService.get(house.id()).get())) {
+        System.out.println(houseService.get(house.getId()).get());
+        if (house.equals(houseService.get(house.getId()).get())) {
             System.out.println("save/get - ok");
         } else {
             System.out.println("save/get - fail");
@@ -121,8 +119,8 @@ public class Main {
         house = houses.iterator().next();
         houseService.setCost(house, 500);
         houseService.setAddress(house, "Pekin");
-        System.out.println(houseService.get(house.id()).get());
-        if (house.equals(houseService.get(house.id()).get())) {
+        System.out.println(houseService.get(house.getId()).get());
+        if (house.equals(houseService.get(house.getId()).get())) {
             System.out.println("update - ok");
         } else {
             System.out.println("update - fail");
@@ -130,9 +128,9 @@ public class Main {
         
         // delete
         house = houses.iterator().next();
-        houseService.delete(house.id());
+        houseService.delete(house.getId());
 
-        Optional<House> delHouse = houseService.get(house.id());
+        Optional<House> delHouse = houseService.get(house.getId());
         if (!delHouse.isPresent()) {
             System.out.println("delete - ok");
         } else {
@@ -152,18 +150,18 @@ public class Main {
 
         // transaction
         try {
-            houseService.buyHouse(user.getId(), house.id());
+            houseService.buyHouse(user.getId(), house.getId());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         // check
         user.setMoney(900);
-        house.setOwner(user.getId());
-        System.out.println(houseService.get(house.id()).get());
+        house.setOwnerId(user.getId());
+        System.out.println(houseService.get(house.getId()).get());
         System.out.println(houseService.getUserService().get(user.getId()).get());
 
-        if (house.equals(houseService.get(house.id()).get())
+        if (house.equals(houseService.get(house.getId()).get())
             && user.equals(houseService.getUserService().get(user.getId()).get())) {
             System.out.println("transaction - ok");
         } else {
@@ -175,6 +173,6 @@ public class Main {
     }
     
     public static ApplicationContext createApplicationContext() {
-        return new AnnotationConfigApplicationContext(SpringConfig.class, HibernateConfig.class);
+        return new ClassPathXmlApplicationContext("spring.xml");
     }
 }

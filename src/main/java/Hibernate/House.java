@@ -2,28 +2,10 @@ package Hibernate;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-@Entity
-@Table(name = "houses")
 public class House {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "house_id")
     private Integer id;
-    
-    @Column(name = "address")
     private String address;
-
-    @Column(name = "owner_id")
     private Integer ownerId;
-
-    @Column(name = "cost")
     private int cost;
 
     public House(final String address, final Integer ownerId, final int cost) {
@@ -34,11 +16,16 @@ public class House {
 
     House() {}
 
-    public Integer id() {
+    public Integer getId() {
         return id;
     }
 
-    public String address() {
+    @SuppressWarnings("unused")
+    private void setId(final Integer id) {
+        this.id = id;
+    }
+
+    public String getAddress() {
         return address;
     }
 
@@ -46,15 +33,15 @@ public class House {
         this.address = address;
     }
 
-    public Integer ownerId() {
+    public Integer getOwnerId() {
         return ownerId;
     }
 
-    public void setOwner(final int ownerId) {
+    public void setOwnerId(final int ownerId) {
         this.ownerId = ownerId;
     }
     
-    public int cost() {
+    public int getCost() {
         return cost;
     }
 
@@ -68,10 +55,10 @@ public class House {
         if (that == null || getClass() != that.getClass()) return false;
 
         final House thatHouse = (House) that;
-        return Objects.equals(id, thatHouse.id())
-        		&& Objects.equals(address, thatHouse.address())
-        		&& Objects.equals(ownerId, thatHouse.ownerId())
-        		&& Objects.equals(cost, thatHouse.cost());
+        return Objects.equals(id, thatHouse.getId())
+                && Objects.equals(address, thatHouse.getAddress())
+                && Objects.equals(ownerId, thatHouse.getOwnerId())
+                && Objects.equals(cost, thatHouse.getCost());
     }
 
     @Override
